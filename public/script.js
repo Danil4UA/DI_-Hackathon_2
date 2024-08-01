@@ -9,16 +9,18 @@ const saveExpenseBtn = document.getElementById("saveExpenseBtn");
 const expenseName = document.getElementById("expenseName");
 const expenseAmount = document.getElementById("expenseAmount");
 
+let budgets = [];
+
 const createBudget = (data) => {
-    const { name, amount } = data;
+    const { id, name, amount, remaining } = data;
 
     return `
-        <div>
+        <div id="budget-${id}">
             <p>Budget: ${name}</p>
-            <p>Amount: ${amount}</p>
-            <p>Remaining balance: </p>
-            <button class="add-expense-btn">Add Expense</button>
-            <button>View Expenses</button>
+            <p>Amount: $${amount}</p>
+            <p>Remaining balance: $<span class="remaining">${remaining}</span></p>
+            <button class="add-expense-btn" data-id="${id}">Add Expense</button>
+            <button class="view-expenses-btn" data-id="${id}">View Expenses</button>
         </div>
     `;
 };
@@ -26,7 +28,7 @@ const createBudget = (data) => {
 addBudget.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = budgetName.value;
-    const amount = budgetAmount.value;
+    const amount = parseFloat(budgetAmount.value);
 
     const response = await fetch("http://localhost:3000/budget", {
         method: "POST",
@@ -36,44 +38,81 @@ addBudget.addEventListener("submit", async (e) => {
         body: JSON.stringify({
             name,
             amount,
+            remaining: amount,
+            expenses: []
         }),
     });
 
     const data = await response.json();
+    budgets.push(data);
     const newBudget = createBudget(data);
-    container.innerHTML = container.innerHTML + newBudget;
+    container.innerHTML += newBudget;
     
-    // Add event listeners for new "Add Expense" buttons
-    document.querySelectorAll(".add-expense-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            modal.style.display = "block";
-        });
-    });
+    addEventListeners();
 });
 
-// Close the modal when the close button is clicked
+function addEventListeners() {
+    document.querySelectorAll(".add-expense-btn").forEach(btn => {
+        btn.removeEventListener("click", openModal);
+        btn.addEventListener("click", openModal);
+    });
+
+    document.querySelectorAll(".view-expenses-btn").forEach(btn => {
+        btn.removeEventListener("click", viewExpenses);
+        btn.addEventListener("click", viewExpenses);
+    });
+}
+
+function openModal(event) {
+    const budgetId = event.target.getAttribute("data-id");
+    modal.setAttribute("data-id", budgetId);
+    modal.style.display = "block";
+}
+
 closeBtn.addEventListener("click", () => {
     modal.style.display = "none";
 });
 
-// Close the modal when clicking outside of the modal content
 window.addEventListener("click", (event) => {
     if (event.target === modal) {
         modal.style.display = "none";
     }
 });
 
-// Handle saving expenses
 saveExpenseBtn.addEventListener("click", () => {
-    const expenseValue = expenseAmount.value;
+    const expenseValue = parseFloat(expenseAmount.value);
     const expenseNameValue = expenseName.value;
+    const budgetId = modal.getAttribute("data-id");
+    
     if (expenseValue && expenseNameValue) {
-        console.log(`Expense: ${expenseNameValue} - ${expenseValue}`);
-        // Here you can add logic to save the expense
-        expenseAmount.value = '';
-        expenseName.value = '';
-        modal.style.display = "none";
+        const budget = budgets.find(b => b.id == budgetId);
+        budget.expenses.push({ name: expenseNameValue, amount: expenseValue });
+        budget.remaining -= expenseValue;
+        
+        fetch(`http://localhost:3000/budget/${budgetId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(budget),
+        }).then(() => {
+            const remainingElement = document.querySelector(`#budget-${budgetId} .remaining`);
+            remainingElement.textContent = budget.remaining;
+            expenseAmount.value = '';
+            expenseName.value = '';
+            modal.style.display = "none";
+        }).catch(error => {
+            console.error('Error updating budget:', error);
+        });
     } else {
         alert('Please enter an expense name and amount');
     }
 });
+
+function viewExpenses(event) {
+    const budgetId = event.target.getAttribute("data-id");
+    const budget = budgets.find(b => b.id == budgetId);
+    alert(`Expenses for ${budget.name}: ${JSON.stringify(budget.expenses, null, 2)}`);
+}
+
+addEventListeners();
