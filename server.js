@@ -13,6 +13,7 @@ app.use(express.static("public"))
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
+
 // End points for Budgets
 app.use("/budget", budgetsRouter)
 

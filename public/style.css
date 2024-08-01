@@ -1,3 +1,127 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+form input[type="text"],
+form input[type="number"] {
+    flex: 1;
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+#root {
+    min-height: 100vh;
+    width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+#container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+.budget-block {
+    width: 400px;
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.budget-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.budget-title p {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.budget-scale {
+    width: 100%;
+    padding: 10px 0;
+    border-radius: 10px;
+    background-color: #45a049;
+    margin: 15px 0;
+}
+.budget-amounts {
+    display: flex;
+    justify-content: space-between;
+}
+
+.budget-amounts p {
+    margin: 0;
+}
+
+.remaining {
+    font-weight: normal; /* Lighter weight for remaining amount */
+}
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px; /* Add some margin between buttons */
+}
+
+.add-expense-btn {
+    background-color: #007BFF; /* Light blue */
+    color: white;
+}
+
+.add-expense-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.view-expenses-btn {
+    background-color: #6c757d; /* Gray */
+    color: white;
+}
+
+.view-expenses-btn:hover {
+    background-color: #5a6268; /* Darker gray on hover */
+}
+
+
+
+
+/** Modal window */
 .modal {
     display: none;
     position: fixed;

@@ -15,10 +15,15 @@ const createBudget = (data) => {
     const { id, name, amount, remaining } = data;
 
     return `
-        <div id="budget-${id}">
-            <p>Budget: ${name}</p>
-            <p>Amount: $${amount}</p>
-            <p>Remaining balance: $<span class="remaining">${remaining}</span></p>
+        <div class="budget-block" id="budget-${id}">
+            <div class="budget-title">
+                <p>${name}</p>
+                <div class="budget-amounts">
+                    <p>$${amount}/</p>
+                    <p>$<span class="remaining" data-id="${id}">${remaining}</span></p>
+                </div>
+            </div>
+            <div class="budget-scale"></div>
             <button class="add-expense-btn" data-id="${id}">Add Expense</button>
             <button class="view-expenses-btn" data-id="${id}">View Expenses</button>
         </div>
@@ -96,7 +101,7 @@ saveExpenseBtn.addEventListener("click", () => {
             },
             body: JSON.stringify(budget),
         }).then(() => {
-            const remainingElement = document.querySelector(`#budget-${budgetId} .remaining`);
+            const remainingElement = document.querySelector(`.remaining[data-id="${budgetId}"]`);
             remainingElement.textContent = budget.remaining;
             expenseAmount.value = '';
             expenseName.value = '';
@@ -114,5 +119,3 @@ function viewExpenses(event) {
     const budget = budgets.find(b => b.id == budgetId);
     alert(`Expenses for ${budget.name}: ${JSON.stringify(budget.expenses, null, 2)}`);
 }
-
-addEventListeners();
