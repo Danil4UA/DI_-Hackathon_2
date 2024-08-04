@@ -1,14 +1,18 @@
 const express = require("express")
 const budgetsRouter = require("./router/budgetsRouter.js")
-
+const cors = require("cors");
 const port = 3000;
-const app = express()
+const app = express();
 
-app.listen(port, ()=>{
-    console.log(`Server running on port ${port}...`)
-})
+app.listen(port, () => {
+  console.log(`Server running on port ${port}...`);
+});
 
-
+app.use(
+  cors({
+    origin: "http://127.0.0.1:1234",
+  })
+);
 app.use(express.static("public"))
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
