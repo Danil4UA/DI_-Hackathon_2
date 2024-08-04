@@ -26,9 +26,11 @@ const createBudget = (data) => {
             <div class="budget-scale"></div>
             <button class="add-expense-btn" data-id="${id}">Add Expense</button>
             <button class="view-expenses-btn" data-id="${id}">View Expenses</button>
+            <button class="delete-budget-btn" data-id="${id}">Delete Budget</button>
         </div>
     `;
 };
+
 
 addBudget.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -56,6 +58,7 @@ addBudget.addEventListener("submit", async (e) => {
     addEventListeners();
 });
 
+
 function addEventListeners() {
     document.querySelectorAll(".add-expense-btn").forEach(btn => {
         btn.removeEventListener("click", openModal);
@@ -66,8 +69,12 @@ function addEventListeners() {
         btn.removeEventListener("click", viewExpenses);
         btn.addEventListener("click", viewExpenses);
     });
-}
 
+    document.querySelectorAll(".delete-budget-btn").forEach(btn => {
+        btn.removeEventListener("click", deleteBudget);
+        btn.addEventListener("click", deleteBudget);
+    });
+}
 function openModal(event) {
     const budgetId = event.target.getAttribute("data-id");
     modal.setAttribute("data-id", budgetId);
@@ -118,4 +125,21 @@ function viewExpenses(event) {
     const budgetId = event.target.getAttribute("data-id");
     const budget = budgets.find(b => b.id == budgetId);
     alert(`Expenses for ${budget.name}: ${JSON.stringify(budget.expenses, null, 2)}`);
+}
+
+
+async function deleteBudget(event) {
+    const budgetId = event.target.getAttribute("data-id");
+
+    const response = await fetch(`http://localhost:3000/budget/${budgetId}`, {
+        method: "DELETE",
+    });
+
+    if (response.ok) {
+        budgets = budgets.filter(b => b.id != budgetId);
+        const budgetElement = document.getElementById(`budget-${budgetId}`);
+        budgetElement.remove();
+    } else {
+        console.error('Error deleting budget:', await response.text());
+    }
 }

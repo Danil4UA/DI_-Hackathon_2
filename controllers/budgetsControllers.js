@@ -43,9 +43,18 @@ const updateBudgetById = (req, res) => {
     }
 }
 
+const deleteBudgetByIf = (req, res) => {
+    const { id } = req.params;
+    const index = budgets.findIndex(item=>item.id == id)
+    if(index === -1)res.json({message: "Buget not found"})
+    budgets.splice(index, 1)
+    res.status(204).send()
+
+}
 module.exports = {
     getAllBudgets,
     getBudgetById,
     createBudget,
     updateBudgetById,
+    deleteBudgetByIf
 }
