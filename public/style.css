@@ -4,6 +4,10 @@ body {
     padding: 0;
 }
 
+.hidden {
+    display: none;
+}
+
 h1 {
     text-align: center;
     color: #333;
@@ -87,6 +91,18 @@ form input[type="submit"]:hover {
 
 .budget-amounts p {
     margin: 0;
+}
+
+
+#budgetChart {
+    max-width: 400px;
+    max-height: 400px;
+    margin: 0 auto 20px;
+}
+
+canvas {
+    display: block;
+    max-width: 100%;
 }
 
 .remaining {

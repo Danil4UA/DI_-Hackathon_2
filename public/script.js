@@ -1,5 +1,7 @@
-const addBudget = document.getElementById("addBudget");
+const setSalaryForm = document.getElementById("setSalary");
+const addBudgetForm = document.getElementById("addBudget");
 const container = document.getElementById("container");
+const salaryAmount = document.getElementById("salaryAmount");
 const budgetName = document.getElementById("budgetName");
 const budgetAmount = document.getElementById("budgetAmount");
 
@@ -10,6 +12,7 @@ const expenseName = document.getElementById("expenseName");
 const expenseAmount = document.getElementById("expenseAmount");
 
 let budgets = [];
+let salary = 0;
 
 const createBudget = (data) => {
     const { id, name, amount, remaining } = data;
@@ -31,8 +34,17 @@ const createBudget = (data) => {
     `;
 };
 
+setSalaryForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    salary = parseFloat(salaryAmount.value);
+    updateChart();
+    
+    // Show the budget form
+    addBudgetForm.classList.remove("hidden");
+    setSalaryForm.classList.add("hidden");
+});
 
-addBudget.addEventListener("submit", async (e) => {
+addBudgetForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = budgetName.value;
     const amount = parseFloat(budgetAmount.value);
@@ -56,8 +68,8 @@ addBudget.addEventListener("submit", async (e) => {
     container.innerHTML += newBudget;
     
     addEventListeners();
+    updateChart();
 });
-
 
 function addEventListeners() {
     document.querySelectorAll(".add-expense-btn").forEach(btn => {
@@ -75,6 +87,7 @@ function addEventListeners() {
         btn.addEventListener("click", deleteBudget);
     });
 }
+
 function openModal(event) {
     const budgetId = event.target.getAttribute("data-id");
     modal.setAttribute("data-id", budgetId);
@@ -108,11 +121,12 @@ saveExpenseBtn.addEventListener("click", () => {
             },
             body: JSON.stringify(budget),
         }).then(() => {
-            const remainingElement = document.querySelector(`.remaining[data-id="${budgetId}"]`);
+            const remainingElement = document.querySelector(`#budget-${budgetId} .remaining`);
             remainingElement.textContent = budget.remaining;
             expenseAmount.value = '';
             expenseName.value = '';
             modal.style.display = "none";
+            updateChart();
         }).catch(error => {
             console.error('Error updating budget:', error);
         });
@@ -127,19 +141,42 @@ function viewExpenses(event) {
     alert(`Expenses for ${budget.name}: ${JSON.stringify(budget.expenses, null, 2)}`);
 }
 
-
-async function deleteBudget(event) {
+function deleteBudget(event) {
     const budgetId = event.target.getAttribute("data-id");
-
-    const response = await fetch(`http://localhost:3000/budget/${budgetId}`, {
-        method: "DELETE",
-    });
-
-    if (response.ok) {
+    
+    fetch(`http://localhost:3000/budget/${budgetId}`, {
+        method: "DELETE"
+    }).then(() => {
         budgets = budgets.filter(b => b.id != budgetId);
-        const budgetElement = document.getElementById(`budget-${budgetId}`);
-        budgetElement.remove();
-    } else {
-        console.error('Error deleting budget:', await response.text());
+        document.getElementById(`budget-${budgetId}`).remove();
+        updateChart();
+    }).catch(error => {
+        console.error('Error deleting budget:', error);
+    });
+}
+
+const ctx = document.getElementById('budgetChart').getContext('2d');
+let budgetChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Remaining Salary', 'Expenses'],
+        datasets: [{
+            data: [salary, 0],
+            backgroundColor: ['#4caf50', '#ff5252'],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
     }
+});
+
+function updateChart() {
+    const totalExpenses = budgets.reduce((acc, budget) => acc + (budget.amount - budget.remaining), 0);
+    const remainingSalary = salary - totalExpenses;
+    
+    budgetChart.data.datasets[0].data[0] = remainingSalary;
+    budgetChart.data.datasets[0].data[1] = totalExpenses;
+    budgetChart.update();
 }

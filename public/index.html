@@ -9,14 +9,21 @@
 <body>
     <div id="root">
         <h1>Budgets</h1>
-        <form id="addBudget">
-            <input type="text" id="budgetName" placeholder="Budgen name" required>
+        
+        <form id="setSalary">
+            <input type="number" id="salaryAmount" placeholder="Enter salary" required>
+            <input type="submit" value="Set Salary">
+        </form>
+
+        <form id="addBudget" class="hidden">
+            <input type="text" id="budgetName" placeholder="Budget name" required>
             <input type="number" id="budgetAmount" placeholder="Budget amount" required>
             <input type="submit" value="Add Budget">
         </form>
-        <div id="container">
 
-        </div>
+        <div id="container"></div>
+
+        <canvas id="budgetChart"></canvas>
     </div>
 
     <div id="modal" class="modal">
@@ -29,6 +36,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
