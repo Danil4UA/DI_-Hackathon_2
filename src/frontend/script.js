@@ -11,6 +11,12 @@ const saveExpenseBtn = document.getElementById("saveExpenseBtn");
 const expenseName = document.getElementById("expenseName");
 const expenseAmount = document.getElementById("expenseAmount");
 
+// Get the new modal and elements
+const viewExpensesModal = document.getElementById("viewExpensesModal");
+const closeViewExpensesModalBtn = document.getElementById("closeViewExpensesModal");
+const expensesList = document.getElementById("expensesList");
+
+
 let budgets = [];
 let salary = 0;
 
@@ -157,23 +163,51 @@ addBudgetForm.addEventListener("submit", async (e) => {
   updateChart();
 });
 
+
+window.addEventListener("click", (event) => {
+  if (event.target === viewExpensesModal) {
+      viewExpensesModal.style.display = "none";
+  }
+});
+function openViewExpensesModal(event) {
+  const budgetId = event.target.getAttribute("data-id");
+  const budget = budgets.find((b) => b.id == budgetId);
+
+  // Clear previous expenses
+  expensesList.innerHTML = '';
+
+  // Add expenses to the modal
+  budget.expenses.forEach(expense => {
+      const expenseItem = document.createElement('div');
+      expenseItem.classList.add('expense-item');
+      expenseItem.innerHTML = `<p>${expense.name}: $${expense.amount}</p>`;
+      expensesList.appendChild(expenseItem);
+  });
+
+  // Open the modal
+  viewExpensesModal.style.display = "block";
+}
+
+closeViewExpensesModalBtn.addEventListener("click", () => {
+  viewExpensesModal.style.display = "none";
+});
+
 function addEventListeners() {
   document.querySelectorAll(".add-expense-btn").forEach((btn) => {
-    btn.removeEventListener("click", openModal);
-    btn.addEventListener("click", openModal);
+      btn.removeEventListener("click", openModal);
+      btn.addEventListener("click", openModal);
   });
 
   document.querySelectorAll(".view-expenses-btn").forEach((btn) => {
-    btn.removeEventListener("click", viewExpenses);
-    btn.addEventListener("click", viewExpenses);
+      btn.removeEventListener("click", openViewExpensesModal);
+      btn.addEventListener("click", openViewExpensesModal);
   });
 
   document.querySelectorAll(".delete-budget-btn").forEach((btn) => {
-    btn.removeEventListener("click", deleteBudget);
-    btn.addEventListener("click", deleteBudget);
+      btn.removeEventListener("click", deleteBudget);
+      btn.addEventListener("click", deleteBudget);
   });
 }
-
 function openModal(event) {
   const budgetId = event.target.getAttribute("data-id");
   modal.setAttribute("data-id", budgetId);

@@ -1,9 +1,10 @@
 CREATE TABLE IF NOT EXISTS "users" (
-	"id" uuid PRIMARY KEY NOT NULL
+	"id" uuid PRIMARY KEY NOT NULL,
+	"salary" integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "budgets" (
-	"id" integer PRIMARY KEY NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"amount" integer NOT NULL,
 	"remaining" integer NOT NULL,

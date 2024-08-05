@@ -1,5 +1,5 @@
 {
-  "id": "bfca7795-ed17-42ae-b729-e5d2d6ee93da",
+  "id": "678ec51f-d1ca-4efa-af7f-db733b03868e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -13,6 +13,13 @@
           "type": "uuid",
           "primaryKey": true,
           "notNull": true
+        },
+        "salary": {
+          "name": "salary",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         }
       },
       "indexes": {},
@@ -26,7 +33,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "integer",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
