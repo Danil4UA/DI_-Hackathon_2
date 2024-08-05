@@ -1,3 +1,4 @@
+// Get elements by their IDs and classes
 const setSalaryForm = document.getElementById("setSalary");
 const addBudgetForm = document.getElementById("addBudget");
 const container = document.getElementById("container");
@@ -11,23 +12,21 @@ const saveExpenseBtn = document.getElementById("saveExpenseBtn");
 const expenseName = document.getElementById("expenseName");
 const expenseAmount = document.getElementById("expenseAmount");
 
-// Get the new modal and elements
 const viewExpensesModal = document.getElementById("viewExpensesModal");
 const closeViewExpensesModalBtn = document.getElementById("closeViewExpensesModal");
 const expensesList = document.getElementById("expensesList");
 
-
 let budgets = [];
 let salary = 0;
 
-// Function to get cookie value
+// Function to get a cookie value by name
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
-// Function to fetch budgets
+// Function to fetch budgets from the server
 async function fetchBudgets(userId) {
   let url = `http://localhost:3000/budgets`;
   if (userId) {
@@ -45,6 +44,8 @@ async function fetchBudgets(userId) {
     return [];
   }
 }
+
+// Function to fetch user data from the server
 async function fetchUser(userId) {
   let url = "http://localhost:3000/users";
   if (userId) {
@@ -54,17 +55,16 @@ async function fetchUser(userId) {
     .then((res) => res.json())
     .then((data) => data)
     .catch((error) => {
-      console.error("Error fetching salary:", error);
+      console.error("Error fetching user:", error);
       return 0;
     });
 }
-// Function to initialize page
+
+// Function to initialize the page
 async function initializePage() {
   const userId = localStorage.getItem("userId");
   if (!userId) {
-    console.log(
-      "No user ID found. A new one will be created on first request."
-    );
+    console.log("No user ID found. A new one will be created on first request.");
   }
   const user = await fetchUser(userId);
   localStorage.setItem("userId", user.id);
@@ -79,33 +79,35 @@ async function initializePage() {
   addEventListeners();
   updateChart();
 
-  // If we have budgets, hide the salary form and show the budget form
+  // Show or hide forms based on existing budgets or salary
   if (budgets.length > 0 || salary > 0) {
     setSalaryForm.classList.add("hidden");
     addBudgetForm.classList.remove("hidden");
   }
 }
 
+// Function to create a budget block
 const createBudget = (data) => {
   const { id, name, amount, remaining } = data;
 
   return `
-        <div class="budget-block" id="budget-${id}">
-            <div class="budget-title">
-                <p>${name}</p>
-                <div class="budget-amounts">
-                    <p>$${amount}/</p>
-                    <p>$<span class="remaining" data-id="${id}">${remaining}</span></p>
-                </div>
+    <div class="budget-block" id="budget-${id}">
+        <div class="budget-title">
+            <p>${name}</p>
+            <div class="budget-amounts">
+                <p>$${amount}/</p>
+                <p>$<span class="remaining" data-id="${id}">${remaining}</span></p>
             </div>
-            <div class="budget-scale"></div>
-            <button class="add-expense-btn" data-id="${id}">Add Expense</button>
-            <button class="view-expenses-btn" data-id="${id}">View Expenses</button>
-            <button class="delete-budget-btn" data-id="${id}">Delete Budget</button>
         </div>
-    `;
+        <div class="budget-scale"></div>
+        <button class="add-expense-btn" data-id="${id}">Add Expense</button>
+        <button class="view-expenses-btn" data-id="${id}">View Expenses</button>
+        <button class="delete-budget-btn" data-id="${id}">Delete Budget</button>
+    </div>
+  `;
 };
 
+// Event listener for setting salary
 setSalaryForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   salary = parseInt(salaryAmount.value);
@@ -133,6 +135,7 @@ setSalaryForm.addEventListener("submit", async (e) => {
   setSalaryForm.classList.add("hidden");
 });
 
+// Event listener for adding a budget
 addBudgetForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = budgetName.value;
@@ -163,12 +166,14 @@ addBudgetForm.addEventListener("submit", async (e) => {
   updateChart();
 });
 
-
+// Event listener for clicking outside the modals to close them
 window.addEventListener("click", (event) => {
   if (event.target === viewExpensesModal) {
-      viewExpensesModal.style.display = "none";
+    viewExpensesModal.style.display = "none";
   }
 });
+
+// Function to open the expenses modal and display the expenses
 function openViewExpensesModal(event) {
   const budgetId = event.target.getAttribute("data-id");
   const budget = budgets.find((b) => b.id == budgetId);
@@ -178,52 +183,59 @@ function openViewExpensesModal(event) {
 
   // Add expenses to the modal
   budget.expenses.forEach(expense => {
-      const expenseItem = document.createElement('div');
-      expenseItem.classList.add('expense-item');
-      expenseItem.innerHTML = `<p>${expense.name}: $${expense.amount}</p>`;
-      expensesList.appendChild(expenseItem);
+    const expenseItem = document.createElement('div');
+    expenseItem.classList.add('expense-item');
+    expenseItem.innerHTML = `<p>${expense.name}: $${expense.amount}</p>`;
+    expensesList.appendChild(expenseItem);
   });
 
   // Open the modal
   viewExpensesModal.style.display = "block";
 }
 
+// Event listener for closing the expenses modal
 closeViewExpensesModalBtn.addEventListener("click", () => {
   viewExpensesModal.style.display = "none";
 });
 
+// Function to add event listeners to buttons
 function addEventListeners() {
   document.querySelectorAll(".add-expense-btn").forEach((btn) => {
-      btn.removeEventListener("click", openModal);
-      btn.addEventListener("click", openModal);
+    btn.removeEventListener("click", openModal);
+    btn.addEventListener("click", openModal);
   });
 
   document.querySelectorAll(".view-expenses-btn").forEach((btn) => {
-      btn.removeEventListener("click", openViewExpensesModal);
-      btn.addEventListener("click", openViewExpensesModal);
+    btn.removeEventListener("click", openViewExpensesModal);
+    btn.addEventListener("click", openViewExpensesModal);
   });
 
   document.querySelectorAll(".delete-budget-btn").forEach((btn) => {
-      btn.removeEventListener("click", deleteBudget);
-      btn.addEventListener("click", deleteBudget);
+    btn.removeEventListener("click", deleteBudget);
+    btn.addEventListener("click", deleteBudget);
   });
 }
+
+// Function to open the modal for adding expenses
 function openModal(event) {
   const budgetId = event.target.getAttribute("data-id");
   modal.setAttribute("data-id", budgetId);
   modal.style.display = "block";
 }
 
+// Event listener for closing the modal
 closeBtn.addEventListener("click", () => {
   modal.style.display = "none";
 });
 
+// Event listener for clicking outside the modal to close it
 window.addEventListener("click", (event) => {
   if (event.target === modal) {
     modal.style.display = "none";
   }
 });
 
+// Event listener for saving an expense
 saveExpenseBtn.addEventListener("click", () => {
   const expenseValue = parseFloat(expenseAmount.value);
   const expenseNameValue = expenseName.value;
@@ -259,14 +271,7 @@ saveExpenseBtn.addEventListener("click", () => {
   }
 });
 
-function viewExpenses(event) {
-  const budgetId = event.target.getAttribute("data-id");
-  const budget = budgets.find((b) => b.id == budgetId);
-  alert(
-    `Expenses for ${budget.name}: ${JSON.stringify(budget.expenses, null, 2)}`
-  );
-}
-
+// Function to delete a budget
 function deleteBudget(event) {
   const budgetId = event.target.getAttribute("data-id");
   const userId = localStorage.getItem("userId");
@@ -287,6 +292,7 @@ function deleteBudget(event) {
     });
 }
 
+// Initialize the chart
 const ctx = document.getElementById("budgetChart").getContext("2d");
 let budgetChart = new Chart(ctx, {
   type: "doughnut",
@@ -306,6 +312,7 @@ let budgetChart = new Chart(ctx, {
   },
 });
 
+// Function to update the chart
 function updateChart() {
   const totalExpenses = budgets.reduce(
     (acc, budget) => acc + (budget.amount - budget.remaining),
