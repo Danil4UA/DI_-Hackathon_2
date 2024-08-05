@@ -9,7 +9,7 @@
 <body>
     <div id="root">
         <h1>Budgets</h1>
-        
+
         <form id="setSalary">
             <input type="number" id="salaryAmount" placeholder="Enter salary" required>
             <input type="submit" value="Set Salary">
@@ -21,9 +21,13 @@
             <input type="submit" value="Add Budget">
         </form>
 
-        <div id="container"></div>
+        <div class="content">
+            <div id="container"></div>
 
-        <canvas id="budgetChart"></canvas>
+            <div class="chart-container">
+                <canvas id="budgetChart"></canvas>
+            </div>
+        </div>
     </div>
 
     <div id="modal" class="modal">

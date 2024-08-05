@@ -43,26 +43,40 @@ form input[type="submit"]:hover {
 
 #root {
     min-height: 100vh;
-    width: 1000px;
+    width: 1200px;
     margin: auto;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
 }
 
 #container {
+    flex: 1;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    gap: 30px;
-    margin-top: 20px;
+    gap: 20px;
+    overflow-y: auto;
+    max-height: 80vh; /* Adjust as needed */
+    padding-right: 20px;
 }
+
 .budget-block {
-    width: 400px;
+    width: 100%;
+    max-width: 400px; /* Adjust the maximum width as needed */
     background-color: #fff;
     padding: 20px;
-    margin-bottom: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
+    margin: 10px;
 }
 
 .budget-title {
@@ -84,6 +98,7 @@ form input[type="submit"]:hover {
     background-color: #45a049;
     margin: 15px 0;
 }
+
 .budget-amounts {
     display: flex;
     justify-content: space-between;
@@ -93,51 +108,50 @@ form input[type="submit"]:hover {
     margin: 0;
 }
 
-
-#budgetChart {
-    max-width: 400px;
-    max-height: 400px;
-    margin: 0 auto 20px;
+.chart-container {
+    width: 500px; /* Increase width */
+    height: 500px; /* Increase height */
+    flex-shrink: 0; /* Prevent flexbox from resizing the chart container */
+    position: sticky;
+    top: 20px;
 }
 
-canvas {
-    display: block;
+#budgetChart {
     max-width: 100%;
+    max-height: 100%;
 }
 
 .remaining {
-    font-weight: normal; /* Lighter weight for remaining amount */
+    font-weight: normal;
 }
+
 button {
     padding: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin: 5px; /* Add some margin between buttons */
+    margin: 5px;
 }
 
 .add-expense-btn {
-    background-color: #007BFF; /* Light blue */
+    background-color: #007BFF;
     color: white;
 }
 
 .add-expense-btn:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #0056b3;
 }
 
 .view-expenses-btn {
-    background-color: #6c757d; /* Gray */
+    background-color: #6c757d;
     color: white;
 }
 
 .view-expenses-btn:hover {
-    background-color: #5a6268; /* Darker gray on hover */
+    background-color: #5a6268;
 }
 
-
-
-
-/** Modal window */
+/* Modal window */
 .modal {
     display: none;
     position: fixed;
