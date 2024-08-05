@@ -239,7 +239,6 @@ function deleteBudget(event) {
 
   fetch(`http://localhost:3000/budgets/${budgetId}`, {
     method: "DELETE",
-    credentials: "include", // Include cookies in the request
   })
     .then(() => {
       budgets = budgets.filter((b) => b.id != budgetId);

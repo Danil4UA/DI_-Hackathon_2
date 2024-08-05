@@ -90,16 +90,11 @@ const deleteBudgetById = async (req, res) => {
   const userId = req.query.userId;
   const { id } = req.params;
   try {
-    const deletedBudget = await db
+    await db
       .delete(budgets)
       .where(eq(budgets.id, parseInt(id)))
-      .where(eq(budgets.userId, userId))
-      .returning();
-    if (deletedBudget.length === 0) {
-      res.status(404).json({ message: "Budget not found" });
-    } else {
-      res.status(204).send();
-    }
+      .where(eq(budgets.userId, userId));
+    res.status(204).send();
   } catch (error) {
     res
       .status(500)

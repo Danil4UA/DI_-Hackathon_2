@@ -15,12 +15,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: "http://127.0.0.1:1234",
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
 // End points for Budgets
 app.use("/budgets", budgetsRouter);
