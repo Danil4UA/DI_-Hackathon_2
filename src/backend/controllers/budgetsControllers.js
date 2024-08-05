@@ -1,4 +1,4 @@
-const { eq } = require("drizzle-orm");
+const { eq, and } = require("drizzle-orm");
 const { db } = require("../db");
 const { budgets } = require("../db/schema");
 const { getUserIdOrCreate } = require("./usersControllers");
@@ -71,8 +71,7 @@ const updateBudgetById = async (req, res) => {
     const updatedBudget = await db
       .update(budgets)
       .set({ name, amount, remaining, expenses })
-      .where(eq(budgets.id, parseInt(id)))
-      .where(eq(budgets.userId, userId))
+      .where(and(eq(budgets.id, parseInt(id)), eq(budgets.userId, userId)))
       .returning();
     if (updatedBudget.length === 0) {
       res.status(404).json({ message: "Budget not found" });
@@ -92,8 +91,7 @@ const deleteBudgetById = async (req, res) => {
   try {
     await db
       .delete(budgets)
-      .where(eq(budgets.id, parseInt(id)))
-      .where(eq(budgets.userId, userId));
+      .where(and(eq(budgets.id, id), eq(budgets.userId, userId)));
     res.status(204).send();
   } catch (error) {
     res

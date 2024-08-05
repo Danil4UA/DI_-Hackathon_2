@@ -240,7 +240,6 @@ saveExpenseBtn.addEventListener("click", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(budget),
-      credentials: "include", // Include cookies in the request
     })
       .then(() => {
         const remainingElement = document.querySelector(
@@ -270,8 +269,12 @@ function viewExpenses(event) {
 
 function deleteBudget(event) {
   const budgetId = event.target.getAttribute("data-id");
-
-  fetch(`http://localhost:3000/budgets/${budgetId}`, {
+  const userId = localStorage.getItem("userId");
+  let url = `http://localhost:3000/budgets/${budgetId}`;
+  if (userId) {
+    url += `?userId=${userId}`;
+  }
+  fetch(url, {
     method: "DELETE",
   })
     .then(() => {
