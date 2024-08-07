@@ -39,7 +39,7 @@ To run the application, you need to start both the backend server and the fronte
 ### Backend Server
 
 1. Start the backend server using Nodemon:
-   npm run dev
+   npm run nodemon
    CopyThis will start the server on `http://localhost:3000` and automatically restart it when changes are detected.
 
 ### Frontend Development Server
