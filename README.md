@@ -45,7 +45,7 @@ To run the application, you need to start both the backend server and the fronte
 ### Frontend Development Server
 
 2. In a separate terminal, start the Parcel development server:
-   npm run start
+   npm run parcel
    CopyThis will start the frontend development server, typically on `http://localhost:1234`.
 
 ## Usage
